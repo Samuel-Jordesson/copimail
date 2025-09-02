@@ -22,6 +22,17 @@ GITHUB_BRANCH = "main"
 # URLs de download
 BASE_URL = f"https://raw.githubusercontent.com/{GITHUB_USER}/{GITHUB_REPO}/{GITHUB_BRANCH}"
 
+def clear_terminal():
+    """Limpa o terminal independente do sistema operacional"""
+    system = platform.system().lower()
+    
+    if system == "windows":
+        # Windows (CMD e PowerShell)
+        os.system('cls')
+    else:
+        # Linux/Mac
+        os.system('clear')
+
 def print_banner():
     """Exibe banner do instalador"""
     print("""
@@ -202,10 +213,12 @@ def download_system():
     # Completar a barra unificada
     print(f"\r  [{'█' * bar_length}] 100% - Instalação concluída!     ")
     
-    print("\nPronto! CopiMail instalado com sucesso!")
-    print("Agora só reiniciar o terminal e executar: copimail")
+    # Limpar o terminal
+    clear_terminal()
     
-    # Informar sobre a documentação
+    # Mostrar apenas a mensagem final
+    print("Pronto! CopiMail instalado com sucesso!")
+    print("Agora só reiniciar o terminal e executar: copimail")
     print("\nDOCUMENTAÇÃO DISPONÍVEL EM:")
     doc_path = os.path.join(install_dir, 'documentacao.html')
     doc_path_absolute = os.path.abspath(doc_path)
