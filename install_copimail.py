@@ -208,6 +208,14 @@ def download_system():
     print("Agora só reiniciar o terminal e executar: copimail")
     print("="*50)
     
+    # Informar sobre a documentação
+    print("\n" + "="*50)
+    print("DOCUMENTAÇÃO DISPONÍVEL")
+    print("="*50)
+    print(f"Para aprender como usar o sistema, acesse:")
+    print(f"📁 {os.path.join(install_dir, 'documentacao.html')}")
+    print("="*50)
+    
     return True
 
 def main():
