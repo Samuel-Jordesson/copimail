@@ -10,6 +10,9 @@ import urllib.request
 import subprocess
 import json
 import platform
+import winreg
+
+
 
 # CONFIGURAÇÃO DO REPOSITÓRIO
 GITHUB_USER = "Samuel-Jordesson"  # SEU USUARIO GITHUB
@@ -23,7 +26,7 @@ def print_banner():
     """Exibe banner do instalador"""
     print("""
     ╔══════════════════════════════════════════════════════════════╗
-    ║                    🚀 INSTALADOR COPIEMAIL 🚀                ║
+    ║                    INSTALADOR COPIEMAIL                      ║
     ║                                                              ║
     ║  Sistema de migração de emails - Instalação automática      ║
     ╚══════════════════════════════════════════════════════════════╝
@@ -32,37 +35,59 @@ def print_banner():
 def download_file(url, local_path):
     """Baixa um arquivo da internet"""
     try:
-        print(f"  📥 Baixando: {os.path.basename(local_path)}")
         urllib.request.urlretrieve(url, local_path)
-        print(f"  ✅ Baixado com sucesso!")
         return True
     except Exception as e:
         print(f"  ❌ Erro ao baixar: {e}")
         return False
 
-def install_dependencies():
-    """Instala as dependências necessárias"""
-    print("\n📦 Instalando dependências...")
-    
-    dependencies = [
-        "colorama",
-        "pwinput", 
-        "tqdm"
-    ]
-    
-    for dep in dependencies:
+
+
+def configure_windows_path(install_dir):
+    """Configura automaticamente o PATH do Windows"""
+    try:
+        # Abrir a chave do registro do usuário atual
+        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, 
+                            "Environment", 
+                            0, 
+                            winreg.KEY_READ | winreg.KEY_WRITE)
+        
+        # Obter o PATH atual
         try:
-            print(f"  📦 Instalando {dep}...")
-            subprocess.run([sys.executable, "-m", "pip", "install", dep], 
+            current_path, _ = winreg.QueryValueEx(key, "Path")
+        except FileNotFoundError:
+            current_path = ""
+        
+        # Verificar se o diretório já está no PATH
+        if install_dir in current_path:
+            winreg.CloseKey(key)
+            return True
+        
+        # Adicionar o novo diretório ao PATH
+        if current_path:
+            new_path = current_path + ";" + install_dir
+        else:
+            new_path = install_dir
+        
+        # Atualizar o PATH no registro
+        winreg.SetValueEx(key, "Path", 0, winreg.REG_EXPAND_SZ, new_path)
+        winreg.CloseKey(key)
+        
+        # Notificar o Windows sobre a mudança usando setx
+        try:
+            subprocess.run(["setx", "PATH", new_path], 
                          capture_output=True, check=True)
-            print(f"  ✅ {dep} instalado!")
-        except subprocess.CalledProcessError:
-            print(f"  ❌ Erro ao instalar {dep}")
+        except Exception as e:
+            # Se setx falhar, usar apenas o registro
+            pass
+        
+        return True
+        
+    except Exception as e:
+        return False
 
 def create_global_command(script_path):
     """Cria comando global para executar o sistema"""
-    print("\n🔧 Criando comando global...")
-    
     system = platform.system().lower()
     
     if system == "windows":
@@ -73,9 +98,8 @@ def create_global_command(script_path):
         with open(batch_path, 'w', encoding='utf-8') as f:
             f.write(batch_content)
         
-        print(f"  ✅ Comando criado: {batch_path}")
-        print("  💡 Adicione o diretório ao PATH do Windows:")
-        print(f"     {os.path.dirname(batch_path)}")
+        # Configurar PATH automaticamente
+        configure_windows_path(os.path.dirname(batch_path))
         
     else:
         # Linux/Mac - criar script executável
@@ -86,20 +110,12 @@ def create_global_command(script_path):
             f.write(shell_content)
         
         os.chmod(shell_path, 0o755)
-        
-        print(f"  ✅ Comando criado: {shell_path}")
-        print("  💡 Adicione ao PATH:")
-        print(f"     export PATH=\"$PATH:{os.path.dirname(shell_path)}\"")
 
 def download_system():
     """Baixa e instala o sistema completo"""
-    print("🚀 Iniciando instalação do CopiMail...")
-    
     # Criar diretório de instalação
     install_dir = os.path.expanduser("~/copimail")
     os.makedirs(install_dir, exist_ok=True)
-    
-    print(f"📁 Diretório de instalação: {install_dir}")
     
     # Lista de arquivos para baixar
     files_to_download = {
@@ -108,36 +124,89 @@ def download_system():
         "version.json": f"{BASE_URL}/version.json"
     }
     
-    # Baixar arquivos
-    print("\n📥 Baixando arquivos do sistema...")
+    # Barra de progresso unificada para toda a instalação
+    print("Instalação em andamento...")
+    
+    # Definir etapas totais da instalação
+    total_steps = len(files_to_download) + 3 + 3  # arquivos + dependências + configuração
+    current_step = 0
+    bar_length = 50
+    
+    # Mostrar barra inicial
+    bar = '░' * bar_length
+    print(f"\r  [{bar}] 0% - Iniciando...", end='', flush=True)
+    
+    # Download de arquivos
     for filename, url in files_to_download.items():
+        current_step += 1
+        progress = (current_step / total_steps) * 100
+        filled_length = int(bar_length * current_step // total_steps)
+        bar = '█' * filled_length + '░' * (bar_length - filled_length)
+        
+        # Mostrar barra de progresso unificada
+        print(f"\r  [{bar}] {progress:.0f}% - Baixando {filename}...", end='', flush=True)
+        
         local_path = os.path.join(install_dir, filename)
         if not download_file(url, local_path):
-            print(f"❌ Falha na instalação: não foi possível baixar {filename}")
+            print(f"\nFalha na instalação: não foi possível baixar {filename}")
             return False
+        
+        # Pausa para visualizar o progresso
+        import time
+        time.sleep(0.2)
     
     # Instalar dependências
-    install_dependencies()
+    dependencies = ["colorama", "pwinput", "tqdm"]
+    for dep in dependencies:
+        current_step += 1
+        progress = (current_step / total_steps) * 100
+        filled_length = int(bar_length * current_step // total_steps)
+        bar = '█' * filled_length + '░' * (bar_length - filled_length)
+        
+        # Mostrar barra de progresso unificada
+        print(f"\r  [{bar}] {progress:.0f}% - Instalando {dep}...", end='', flush=True)
+        
+        try:
+            subprocess.run([sys.executable, "-m", "pip", "install", dep], 
+                         capture_output=True, check=True)
+        except subprocess.CalledProcessError:
+            pass
+        
+        # Pausa para visualizar o progresso
+        import time
+        time.sleep(0.3)
     
-    # Criar comando global
-    script_path = os.path.join(install_dir, "copimail.py")
-    create_global_command(script_path)
+    # Configuração do sistema
+    config_steps = ["Criando comandos", "Configurando PATH", "Finalizando"]
+    for step in config_steps:
+        current_step += 1
+        progress = (current_step / total_steps) * 100
+        filled_length = int(bar_length * current_step // total_steps)
+        bar = '█' * filled_length + '░' * (bar_length - filled_length)
+        
+        # Mostrar barra de progresso unificada
+        print(f"\r  [{bar}] {progress:.0f}% - {step}...", end='', flush=True)
+        
+        # Executar etapa
+        if step == "Criando comandos":
+            script_path = os.path.join(install_dir, "copimail.py")
+            create_global_command(script_path)
+        elif step == "Configurando PATH":
+            # PATH já é configurado na função create_global_command
+            pass
+        
+        # Pausa para visualizar o progresso
+        import time
+        time.sleep(0.3)
     
-    print("\n" + "="*60)
-    print("🎉 INSTALAÇÃO CONCLUÍDA COM SUCESSO!")
-    print("="*60)
-    print(f"📁 Sistema instalado em: {install_dir}")
-    print("💡 Para usar o sistema:")
+    # Completar a barra unificada
+    print(f"\r  [{'█' * bar_length}] 100% - Instalação concluída!     ")
     
-    if platform.system().lower() == "windows":
-        print("   1. Adicione o diretório ao PATH do Windows")
-        print("   2. Execute: copimail")
-    else:
-        print("   1. Adicione ao PATH: export PATH=\"$PATH:{install_dir}\"")
-        print("   2. Execute: copimail")
-    
-    print("\n🔄 Para atualizar: execute este script novamente")
-    print("="*60)
+    print("\n" + "="*50)
+    print("Pronto! CopiMail instalado com sucesso!")
+    print("="*50)
+    print("Agora só reiniciar o terminal e executar: copimail")
+    print("="*50)
     
     return True
 
@@ -151,21 +220,24 @@ def main():
         print(f"   Versão atual: {sys.version}")
         return
     
-    print(f"✅ Python {sys.version.split()[0]} detectado")
+    print(f"Python {sys.version.split()[0]} detectado")
     
     # Confirmar instalação
-    print(f"\n📋 Sistema será baixado de: {BASE_URL}")
-    confirm = input("🤔 Continuar com a instalação? (s/n): ").lower()
+    print(f"\nSistema será baixado de: {BASE_URL}")
+    confirm = input("Continuar com a instalação? (s/n): ").lower()
     
     if confirm != 's':
-        print("❌ Instalação cancelada.")
+        print("Instalação cancelada.")
         return
     
-    # Executar instalação
+    print("\nIniciando instalação...")
+    
+    # Executar instalação com barra de progresso unificada
     if download_system():
-        print("\n🎯 CopiMail está pronto para uso!")
+        print("\nCopiMail está pronto para uso!")
     else:
-        print("\n💥 Falha na instalação. Verifique a conexão com a internet.")
+        print("\nFalha na instalação. Verifique a conexão com a internet.")
+        return
 
 if __name__ == "__main__":
     main()

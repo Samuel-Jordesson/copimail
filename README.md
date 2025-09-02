@@ -25,10 +25,22 @@ curl -O https://raw.githubusercontent.com/Samuel-Jordesson/copimail/main/install
 python install_copimail.py
 ```
 
+**✨ Barras de Progresso Elegantes**: A instalação mostra barras de progresso visuais para cada etapa, criando uma experiência de instalação profissional e agradável.
+
+**🔄 Dependências Automáticas**: O instalador instala automaticamente todas as dependências necessárias durante a instalação.
+
 ### 3. Usar o Sistema
 ```bash
 # Executar CopiMail
 copimail
+```
+
+**Nota**: No Windows, o PATH é configurado automaticamente. Após a instalação, reinicie o terminal/PowerShell para usar o comando `copimail`.
+
+### 4. Testar Configuração (Opcional)
+```bash
+# Testar se o PATH foi configurado corretamente
+python test_path_config.py
 ```
 
 ## 📋 Requisitos
@@ -77,6 +89,7 @@ copimail/
 ├── install_copimail.py  # Script de instalação
 ├── requirements.txt     # Dependências
 ├── version.json         # Informações de versão
+├── test_path_config.py  # Script de teste do PATH
 └── README.md           # Este arquivo
 ```
 
@@ -112,8 +125,9 @@ pip install --upgrade colorama pwinput tqdm
 ```
 
 ### Problemas no Windows
-- Certifique-se de que o Python está no PATH
-- Execute como administrador se necessário
+- O PATH é configurado automaticamente durante a instalação
+- Se o comando `copimail` não funcionar, reinicie o terminal/PowerShell
+- Execute como administrador se necessário para configurações de sistema
 
 ## 📝 Changelog
 
@@ -123,6 +137,9 @@ pip install --upgrade colorama pwinput tqdm
 - ✅ Barras de progresso
 - ✅ Interface colorida
 - ✅ Validação automática
+- ✅ Configuração automática do PATH no Windows
+- ✅ Barras de progresso visuais para cada etapa da instalação
+- ✅ Instalação automática de dependências
 
 ## 🤝 Contribuição
 
