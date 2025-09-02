@@ -25,7 +25,15 @@ curl -O https://raw.githubusercontent.com/Samuel-Jordesson/copimail/main/install
 python install_copimail.py
 ```
 
+<<<<<<< HEAD
 **✨ Barras de Progresso Elegantes**: A instalação mostra barras de progresso visuais para cada etapa, criando uma experiência de instalação profissional e agradável.
+=======
+<<<<<<< HEAD
+**✨ Interface Limpa**: A instalação mostra apenas barras de progresso elegantes, sem mensagens verbosas.
+=======
+**✨ Barras de Progresso Elegantes**: A instalação mostra barras de progresso visuais para cada etapa, criando uma experiência de instalação profissional e agradável.
+>>>>>>> 5be5edd (Adiciona arquivos do projeto)
+>>>>>>> 14d72db (Adiciona arquivos do projeto)
 
 **🔄 Dependências Automáticas**: O instalador instala automaticamente todas as dependências necessárias durante a instalação.
 
@@ -138,7 +146,15 @@ pip install --upgrade colorama pwinput tqdm
 - ✅ Interface colorida
 - ✅ Validação automática
 - ✅ Configuração automática do PATH no Windows
+<<<<<<< HEAD
 - ✅ Barras de progresso visuais para cada etapa da instalação
+=======
+<<<<<<< HEAD
+- ✅ Interface de instalação limpa com barras de progresso
+=======
+- ✅ Barras de progresso visuais para cada etapa da instalação
+>>>>>>> 5be5edd (Adiciona arquivos do projeto)
+>>>>>>> 14d72db (Adiciona arquivos do projeto)
 - ✅ Instalação automática de dependências
 
 ## 🤝 Contribuição
