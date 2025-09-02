@@ -1,0 +1,23 @@
+{
+    "version": "1.0.0",
+    "release_date": "2024-01-15",
+    "description": "Sistema de migração de emails CopiMail",
+    "features": [
+        "Migração individual de emails",
+        "Migração em massa",
+        "Barras de progresso visuais",
+        "Interface colorida e intuitiva",
+        "Validação automática de conexões"
+    ],
+    "requirements": [
+        "Python 3.6+",
+        "colorama",
+        "pwinput",
+        "tqdm"
+    ],
+    "changelog": [
+        "v1.0.0 - Versão inicial com migração individual e em massa"
+    ],
+    "download_url": "https://github.com/Samuel-Jordesson/copimail",
+    "support": "Para suporte, abra uma issue no GitHub"
+}
