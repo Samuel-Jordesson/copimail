@@ -206,38 +206,10 @@ def download_system():
     print("Agora só reiniciar o terminal e executar: copimail")
     
     # Informar sobre a documentação
-    print("\nDOCUMENTAÇÃO DISPONÍVEL")
-    print("Para aprender como usar o sistema, execute o arquivo abaixo:")
-    
-    # Criar arquivo .bat para abrir a documentação
+    print("\nDOCUMENTAÇÃO DISPONÍVEL EM:")
     doc_path = os.path.join(install_dir, 'documentacao.html')
     doc_path_absolute = os.path.abspath(doc_path)
-    
-    # No Windows, criar arquivo .bat executável
-    if platform.system().lower() == "windows":
-        # Criar arquivo .bat para abrir a documentação
-        bat_content = f'@echo off\nstart "" "{doc_path_absolute}"'
-        bat_path = os.path.join(install_dir, 'abrir_documentacao.bat')
-        
-        with open(bat_path, 'w', encoding='utf-8') as f:
-            f.write(bat_content)
-        
-        print(f"🌐 {doc_path_absolute}")
-        print("📁 Arquivo criado: abrir_documentacao.bat")
-        print("💡 Execute este arquivo para abrir a documentação no navegador:")
-        print(f"   {bat_path}")
-        
-        # Tentar abrir automaticamente
-        try:
-            os.startfile(doc_path_absolute)
-            print("✅ Documentação aberta automaticamente no navegador!")
-        except:
-            print("📋 Execute o arquivo 'abrir_documentacao.bat' para abrir a documentação")
-    else:
-        # Linux/Mac
-        print(f"🌐 {doc_path_absolute}")
-        print("💡 Execute este comando para abrir a documentação:")
-        print(f"   xdg-open {doc_path_absolute}")
+    print(f"📁 {doc_path_absolute}")
     
     return True
 
