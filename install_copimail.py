@@ -202,19 +202,34 @@ def download_system():
     # Completar a barra unificada
     print(f"\r  [{'█' * bar_length}] 100% - Instalação concluída!     ")
     
-    print("\n" + "="*50)
-    print("Pronto! CopiMail instalado com sucesso!")
-    print("="*50)
+    print("\nPronto! CopiMail instalado com sucesso!")
     print("Agora só reiniciar o terminal e executar: copimail")
-    print("="*50)
     
     # Informar sobre a documentação
-    print("\n" + "="*50)
-    print("DOCUMENTAÇÃO DISPONÍVEL")
-    print("="*50)
-    print(f"Para aprender como usar o sistema, acesse:")
-    print(f"📁 {os.path.join(install_dir, 'documentacao.html')}")
-    print("="*50)
+    print("\nDOCUMENTAÇÃO DISPONÍVEL")
+    print("Para aprender como usar o sistema, clique no link abaixo:")
+    
+    # Criar link clicável para a documentação
+    doc_path = os.path.join(install_dir, 'documentacao.html')
+    doc_path_absolute = os.path.abspath(doc_path)
+    
+    # No Windows, usar start para abrir no navegador
+    if platform.system().lower() == "windows":
+        print(f"🌐 {doc_path_absolute}")
+        print("Clique aqui para abrir a documentação no navegador:")
+        print(f"start {doc_path_absolute}")
+        
+        # Tentar abrir automaticamente
+        try:
+            os.startfile(doc_path_absolute)
+            print("✅ Documentação aberta automaticamente no navegador!")
+        except:
+            print("📋 Copie e cole o comando acima para abrir a documentação")
+    else:
+        # Linux/Mac
+        print(f"🌐 {doc_path_absolute}")
+        print("Clique aqui para abrir a documentação no navegador:")
+        print(f"xdg-open {doc_path_absolute}")
     
     return True
 
