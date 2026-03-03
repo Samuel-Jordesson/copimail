@@ -1,3 +1,11 @@
+ ________  ________  ________  ___  _____ ______   ________  ___  ___          
+|\   ____\|\   __  \|\   __  \|\  \|\   _ \  _   \|\   __  \|\  \|\  \         
+\ \  \___|\ \  \|\  \ \  \|\  \ \  \ \  \\\__\ \  \ \  \|\  \ \  \ \  \        
+ \ \  \    \ \  \\\  \ \   ____\ \  \ \  \\|__| \  \ \   __  \ \  \ \  \       
+  \ \  \____\ \  \\\  \ \  \___|\ \  \ \  \    \ \  \ \  \ \  \ \  \ \  \____  
+   \ \_______\ \_______\ \__\    \ \__\ \__\    \ \__\ \__\ \__\ \__\ \_______\
+    \|_______|\|_______|\|__|     \|__|\|__|     \|__|\|__|\|__|\|__|\|_______|
+
 # 🚀 CopiMail - Sistema de Migração de Emails
 
 Sistema profissional para migração de emails entre contas, com interface intuitiva e funcionalidades avançadas.
@@ -183,3 +191,4 @@ Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes
 ---
 
 **Desenvolvido com ❤️ para facilitar a migração de emails**
+
